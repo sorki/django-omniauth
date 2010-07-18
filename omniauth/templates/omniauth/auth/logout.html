@@ -1,0 +1,15 @@
+{% extends "omniauth.html" %}
+
+{% block auth_title %}
+  Logged out
+{% endblock %}
+
+{% block auth_heading %}
+  Logged out
+{% endblock %}
+
+{% block auth_content %}
+Thanks for spending some quality time with the Web site today.
+
+<a href="{% url login %}">Login again</a>
+{% endblock %}
