@@ -29,6 +29,8 @@ Email: {{ user.email }}
 {% uni_form forms.auth_form forms.auth_form.helper %}
 {% uni_form forms.oid_form forms.oid_form.helper %}
 
+<a href="{% url fboauth_start %}">Fb login</a>
+
 {% endif %}
 
 

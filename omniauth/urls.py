@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 
+import fboauth.views as fb_views
 import registration.views as reg_views
 import django.contrib.auth.views as auth_views
 import django_openid_auth.views as oid_views
@@ -18,8 +19,10 @@ from views import omnilogin
 from django.utils.functional import curry
 
 terminal_url = getattr(settings, 'LOGIN_REDIRECT_URL')
-custom_failure = curry(oid_views.default_render_failure,
+custom_oid_failure = curry(oid_views.default_render_failure,
         template_name='omniauth/openid/failure.html')
+custom_fb_failure = curry(fb_views.default_render_failure,
+        template_name='omniauth/fboauth/failure.html')
 
 urlpatterns = patterns('',
     # Generic
@@ -38,12 +41,23 @@ urlpatterns = patterns('',
         {'form': UniOidForm, 
          'template_name': 'omniauth/openid/login.html',
          'login_complete': 'oid_complete',
-         'render_failure': custom_failure},
+         'render_failure': custom_oid_failure},
         name='oid_login'),
     url(r'^oid/complete/$',
         oid_views.login_complete,
-        {'render_failure': custom_failure},
+        {'render_failure': custom_oid_failure},
         name='oid_complete'),
+
+    # FB
+    url(r'fb/start/$',
+        'fboauth.views.start',
+        name='fboauth_start'),
+    url(r'fb/complete/$', 
+        'fboauth.views.complete', 
+        {'render_failure': custom_fb_failure},
+        name='fboauth_complete'),
+
+
 
     # Auth
     url(r'^auth/register/$',

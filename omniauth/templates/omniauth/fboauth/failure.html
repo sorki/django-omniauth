@@ -1,0 +1,22 @@
+{% extends "omniauth.html" %}
+
+{% block auth_title %}
+  Facebook Connect failure
+{% endblock %}
+
+{% block auth_heading %}
+  Facebook Connect failure 
+{% endblock %}
+
+
+{% block auth_extra_head %}
+{% endblock %}
+
+{% block auth_content %}
+  Facebook Connect authentication process failed.
+
+  <div id="fb_failure_message">
+    Detailed technical message:
+    <pre>{{ message }}</pre>
+  </div>
+{% endblock %}

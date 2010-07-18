@@ -2,13 +2,13 @@ Omniauth
 =========
 
 Warning:
-This app is not mature enough to be production stable.
+This app is not mature enough to be used in production.
 
 Lightweigh user authentication app which instead of trying to provide
 every authentication backend makes heavy use of widely used apps 
 like django-registration.
 
-It also tries provides high quality templates for these apps.
+It also tries to provide high quality templates for these apps.
 
 
 Requirements:
