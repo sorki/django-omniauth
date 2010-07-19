@@ -14,21 +14,21 @@
 {% endblock %}
 
 {% block auth_content %}
+  {% if user.is_authenticated %}
+    <p>
+      Logged in as {{ user }}
+        {% if user.get_full_name %}
+          ({{ user.get_full_name }})
+        {% endif %}
+      <li> <a href="{% url omni_logout %}">Logout</a> </li>
+      <li> <a href="{% url omni_logout_then_login %}">Relogin</a> </li>
+    <p>
+  {% else %}
 
-{% if user.is_authenticated %}
-Logged in as {{ user }}
-({{ user.get_full_name }}) <br />
+    {% uni_form forms.auth_form forms.auth_form.helper %}
+    {% uni_form forms.oid_form forms.oid_form.helper %}
 
-  <li> <a href="{% url omni_logout %}">Logout</a> </li>
-  <li> <a href="{% url omni_logout_then_login %}">Relogin</a> </li>
-{% else %}
+    <a href="{% url fboauth_start %}">Fb login</a>
 
-{% uni_form forms.auth_form forms.auth_form.helper %}
-{% uni_form forms.oid_form forms.oid_form.helper %}
-
-<a href="{% url fboauth_start %}">Fb login</a>
-
-{% endif %}
-
-
+  {% endif %}
 {% endblock %}
