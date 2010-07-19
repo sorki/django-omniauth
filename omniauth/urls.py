@@ -33,14 +33,16 @@ urlpatterns = patterns('',
             'oid_form': IndexUniOidForm
             }
         },
-        name='login'),
+        name='omni_login'),
 
    url(r'logout/$',
        auth_views.logout,
        {'template_name': 'omniauth/auth/logout.html'},
-       name='logout'),
+       name='omni_logout'),
 
-
+   url(r'^auth/logout_then_login/$',
+       auth_views.logout_then_login,
+       name='omni_logout_then_login'),
 
     # OpenID
     url(r'^oid/login/$',
@@ -84,10 +86,6 @@ urlpatterns = patterns('',
         {'template_name': 'omniauth/auth/login.html',
          'authentication_form': UniAuthForm}, 
         name='auth_login'),
-
-   url(r'^auth/logout_then_login/$',
-       auth_views.logout_then_login,
-       name='auth_logout_then_login'),
 
    url(r'^auth/password/change/$',
        auth_views.password_change,

@@ -18,12 +18,9 @@
 {% if user.is_authenticated %}
 Logged in as {{ user }}
 ({{ user.get_full_name }}) <br />
-First name: {{ user.first_name }}
-last name: {{ user.last_name }} <br />
-Email: {{ user.email }}
 
-  <li> <a href="{% url auth_logout %}">Logout</a> </li>
-  <li> <a href="{% url auth_logout_then_login %}">Relogin</a> </li>
+  <li> <a href="{% url omni_logout %}">Logout</a> </li>
+  <li> <a href="{% url omni_logout_then_login %}">Relogin</a> </li>
 {% else %}
 
 {% uni_form forms.auth_form forms.auth_form.helper %}
