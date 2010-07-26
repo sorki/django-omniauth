@@ -1,31 +1,33 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
+from django.utils.functional import curry
 from django.views.generic.simple import direct_to_template
+from django.contrib.auth.decorators import login_required
 
 import fboauth.views as fb_views
 import registration.views as reg_views
 import django.contrib.auth.views as auth_views
 import django_openid_auth.views as oid_views
 
+from views import omnilogin
 from forms import (
         UniAuthForm, IndexUniAuthForm, 
+        UniOidForm, IndexUniOidForm,
         UniAuthRegForm, UniPwdChangeForm,
         UniPwdResetForm, UniPwdResetConfirmForm,
-        UniOidForm, IndexUniOidForm,
         )
 
-from views import omnilogin
 
-from django.utils.functional import curry
 
 terminal_url = getattr(settings, 'LOGIN_REDIRECT_URL')
+
 custom_oid_failure = curry(oid_views.default_render_failure,
         template_name='omniauth/openid/failure.html')
 custom_fb_failure = curry(fb_views.default_render_failure,
         template_name='omniauth/fboauth/failure.html')
 
 urlpatterns = patterns('',
-    # Generic
+    # Common
     url(r'^login/',
         omnilogin,
         {'forms_to_render': {
@@ -37,12 +39,22 @@ urlpatterns = patterns('',
 
    url(r'logout/$',
        auth_views.logout,
-       {'template_name': 'omniauth/auth/logout.html'},
+       {'template_name': 'omniauth/logout.html'},
        name='omni_logout'),
 
-   url(r'^auth/logout_then_login/$',
+   url(r'^logout_then_login/$',
        auth_views.logout_then_login,
        name='omni_logout_then_login'),
+
+    url(r'^registration_closed/$',
+        direct_to_template,
+        {'template': 'omniauth/registration_closed.html'},
+        name='omni_reg_disallowed'),
+    
+    url(r'info/$',
+        login_required(direct_to_template),
+        {'template': 'omniauth/info.html'},
+        name='omni_info'),
 
     # OpenID
     url(r'^oid/login/$',
@@ -57,7 +69,7 @@ urlpatterns = patterns('',
         {'render_failure': custom_oid_failure},
         name='oid_complete'),
 
-    # FB
+    # Facebook
     url(r'fb/start/$',
         'fboauth.views.start',
         name='fboauth_start'),
@@ -66,20 +78,15 @@ urlpatterns = patterns('',
         {'render_failure': custom_fb_failure},
         name='fboauth_complete'),
 
-
-
-    # Auth
+    # Auth + registration
     url(r'^auth/register/$',
         reg_views.register,
         {'backend': 'registration.backends.simple.SimpleBackend',
          'success_url': terminal_url,
          'form_class': UniAuthRegForm,
+         'disallowed_url': 'omni_reg_disallowed',
          'template_name': 'omniauth/auth/register.html'},
         name='auth_register'),
-    url(r'^registration_closed/$',
-        direct_to_template,
-        {'template': 'omniauth/registration_closed.html'},
-        name='registration_disallowed'),
 
     url(r'^auth/login/$', 
         auth_views.login, 

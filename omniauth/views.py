@@ -1,5 +1,6 @@
 import re
 from django.conf import settings
+from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -9,7 +10,7 @@ from django.views.decorators.csrf import csrf_protect
 @csrf_protect
 def omnilogin(request, forms_to_render={},
         redirect_field_name=REDIRECT_FIELD_NAME,
-        template_name='omniauth/index.html'):
+        template_name='omniauth/login.html'):
 
     redirect_to = request.REQUEST.get(redirect_field_name, '')
 
@@ -19,7 +20,8 @@ def omnilogin(request, forms_to_render={},
     elif '//' in redirect_to and re.match(r'[^\?]*//', redirect_to):
         redirect_to = settings.LOGIN_REDIRECT_URL
 
-    # TODO (minor): add automatic redirect to redirect_to if user is logged in??
+    if request.user.is_authenticated():
+        HttpResponseRedirect(redirect_to)
 
     for (var_name, form) in forms_to_render.iteritems():
         if not callable(form):

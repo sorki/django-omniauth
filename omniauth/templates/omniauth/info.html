@@ -1,0 +1,21 @@
+{% extends "omniauth.html" %}
+
+{% block auth_title %}
+  Account info
+{% endblock %}
+{% block auth_heading %}
+  Account info
+{% endblock %}
+
+{% block auth_content %}
+  {% if user.is_authenticated %}
+    <p>
+      Logged in as {{ user }}
+        {% if user.get_full_name %}
+          ({{ user.get_full_name }})
+        {% endif %}
+      <li> <a href="{% url omni_logout %}">Logout</a> </li>
+      <li> <a href="{% url omni_logout_then_login %}">Relogin</a> </li>
+    <p>
+  {% endif %}
+{% endblock %}
